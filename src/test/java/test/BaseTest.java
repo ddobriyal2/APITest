@@ -42,7 +42,7 @@ import ru.yandex.qatools.allure.model.SeverityLevel;
  *	headers will remain fixed for all calls hence reading from config.properties file
  *
  *	@author devesh
- *	@date 20th March'18..
+ *	@date 20th March'18...
  */
 @Title("Base Test Class")
 @Description("Description: Common class for all API tests")
