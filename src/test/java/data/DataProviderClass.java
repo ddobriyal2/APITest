@@ -10,7 +10,7 @@ import helper.ReadPropertyFile;
  * 
  * test case to be run will be picked from config.properties file
  * 
- * @author sheetalsingh
+ * @author devesh
  */
 public class DataProviderClass {
 

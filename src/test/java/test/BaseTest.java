@@ -1,16 +1,34 @@
 package test;
 
-import org.testng.IHookCallBack;
-import org.testng.IHookable;
+import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 import org.testng.ITestResult;
 import org.testng.SkipException;
-import org.testng.annotations.*;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.Test;
+
+import com.relevantcodes.extentreports.ExtentReports;
+import com.relevantcodes.extentreports.ExtentTest;
+import com.relevantcodes.extentreports.LogStatus;
+
 import data.DataProviderClass;
 import helper.ReadPropertyFile;
 import helper.RestMe;
-import helper.TestListeners;
 //import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import junit.framework.Assert;
 //import static io.restassured.RestAssured.*;
 import ru.yandex.qatools.allure.annotations.Description;
 import ru.yandex.qatools.allure.annotations.Features;
@@ -19,21 +37,50 @@ import ru.yandex.qatools.allure.annotations.Stories;
 import ru.yandex.qatools.allure.annotations.Title;
 import ru.yandex.qatools.allure.model.SeverityLevel;
 
-import java.util.Arrays;
-import java.util.Map;
-
-import javax.xml.ws.RespectBinding;
-
 /**
  *	assumptions:
  *	headers will remain fixed for all calls hence reading from config.properties file
  *
- *	@author sheetalsingh
+ *	@author devesh
  *	@date Feb 2017
  */
 @Title("Base Test Class")
 @Description("Description: Common class for all API tests")
 public class BaseTest {
+	
+	
+private static final Logger logger = Logger.getLogger(BaseTest.class.getName());
+	
+	
+	@BeforeClass
+		public void loadlog4J(){
+			String log4jConfPath = System.getProperty("user.dir")+"/log4j.properties";
+			PropertyConfigurator.configure(log4jConfPath);
+		}
+	
+	public static ExtentReports extent;
+	public static ExtentTest test;
+	
+	static {
+	Calendar calender = Calendar.getInstance();
+	SimpleDateFormat formater = new SimpleDateFormat("dd_mm_yyyy_hh_mm_ss");
+	
+	extent = new ExtentReports("/home/ddobriyal/git/PriveRestAssured/src/test/java/Report/test" +formater.format(calender.getTime())+ ".html",false);
+	
+	}
+	
+	public void getresult(ITestResult result)
+	{
+		if (result.getStatus()==ITestResult.SUCCESS) {
+		test.log(LogStatus.PASS, result.getName()+"Test Is pass");
+	}
+		else if (result.getStatus()==ITestResult.FAILURE) {
+			test.log(LogStatus.FAIL, result.getName()+"Test has failed");
+		}
+		
+		
+	}
+	
 	RestMe restme;
 	Response response;
 	String jsonString;
@@ -56,6 +103,21 @@ public class BaseTest {
 		
 	}
 	
+	@BeforeMethod()
+	public void beforeMethod(Method result){
+		test= extent.startTest(result.getName());
+		test.log(LogStatus.INFO,result.getName()+ "Test started");
+	}
+	@AfterMethod()
+	public void afterMethod(ITestResult result){
+	getresult(result);}
+	
+	@AfterClass(alwaysRun=true)
+	public void endTest(){
+		extent.endTest(test);
+		extent.flush();
+	}
+	
 	
 	
 	/**
@@ -70,6 +132,7 @@ public class BaseTest {
 	@Severity(SeverityLevel.CRITICAL)
 	@Title("API Calls")
 	@Description("Description: All types of calls")
+	
 	@Test(dataProvider = "csvdataprovider",dataProviderClass=DataProviderClass.class)
 	public void testRequest(String test_id, String test_step, String suite, String action, String data){
 		
@@ -77,8 +140,10 @@ public class BaseTest {
 			String [] testsuitestorun = propertyMap.get("testsuitestorun").split(",");
 			boolean isRunSuitePresent = Arrays.asList(testsuitestorun).contains(suite);
 			if(isRunSuitePresent){
+				logger.info("Test case for suites Started");
 				performAction(action, data);
 			}else{
+				logger.info("No Tests to move forward");
 				System.out.println("########### Dont report this @test");
 				throw new SkipException("SUITE NOT MATCHING.....");
 			}
@@ -87,8 +152,10 @@ public class BaseTest {
 			String [] testidstorun = propertyMap.get("testidstorun").split(",");
 			boolean isRunTestIdPresent = Arrays.asList(testidstorun).contains(test_id);
 			if(isRunTestIdPresent){
+				logger.info("Test case for test id Started");
 				performAction(action, data);
 			}else{
+				logger.info("No Tests to move forward");
 				System.out.println("########### Dont report this @test");
 				throw new SkipException("SUITE NOT MATCHING.....");
 			}
@@ -98,6 +165,12 @@ public class BaseTest {
 		}
 	}
 	
+	
+	@Test
+	public void  testbogas(){
+		System.out.println("test");
+		Assert.assertTrue("Passed", true);
+	}
 	
 	
 	/**

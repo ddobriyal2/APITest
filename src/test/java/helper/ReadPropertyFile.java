@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 /**
  * Class will read and load config.properties into a Map
  * 
- * @author sheetalsingh
+ * @author devesh
  *
  */
 public class ReadPropertyFile {

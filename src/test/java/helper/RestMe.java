@@ -23,8 +23,8 @@ import io.restassured.specification.ResponseSpecification;
 /**
  * Rest class will contains all GET, POST, DELETE etc methods
  * 
- * @author sheetalsingh
- * @date Feb 2017
+ * @author devesh
+ * 
  * refer: https://developer.android.com/reference/org/json/JSONObject.html
  */
 public class RestMe {
