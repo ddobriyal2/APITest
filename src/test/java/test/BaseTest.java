@@ -42,7 +42,7 @@ import ru.yandex.qatools.allure.model.SeverityLevel;
  *	headers will remain fixed for all calls hence reading from config.properties file
  *
  *	@author devesh
- *	@date 20th March'18....
+ *	@date 20th March'18..
  */
 @Title("Base Test Class")
 @Description("Description: Common class for all API tests")
@@ -65,7 +65,7 @@ private static final Logger logger = Logger.getLogger(BaseTest.class.getName());
 	Calendar calender = Calendar.getInstance();
 	SimpleDateFormat formater = new SimpleDateFormat("dd_mm_yyyy_hh_mm_ss");
 	
-	extent = new ExtentReports("/home/ddobriyal/git/PriveRestAssured/src/test/java/Report/test" +formater.format(calender.getTime())+ ".html",false);
+	extent = new ExtentReports("/home/bleung/git/apitest/APITest/src/test/java/Report/test" +formater.format(calender.getTime())+ ".html",false);
 	
 	}
 	

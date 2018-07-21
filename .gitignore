@@ -9,3 +9,4 @@ testng.out.xml
 target/test-classes/inputdata.csv
 
 site/*
+/target/
